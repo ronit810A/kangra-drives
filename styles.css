@@ -597,6 +597,7 @@ z-index: 9999;
   justify-content: center;
   align-items: center;
   min-height: 30vh;
+  margin-top: 150px;
 }
 
 .aa{
@@ -630,11 +631,8 @@ z-index: 9999;
     outline: none;
     border: none;
     font-size: 1rem;
-    color: var(--white);
-    background-color: var(--primary-color);
+    background-color: #765efd;
     border-radius: 0.5rem;
-    transition: 0.3s;
-    cursor: pointer;
 }
 /* footer */
 .footer {
