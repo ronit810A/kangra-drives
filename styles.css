@@ -596,7 +596,7 @@ z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 30vh;
+  min-height: 100vh;
 }
 
 .aa{
