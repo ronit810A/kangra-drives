@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Booking</title>
+
+<!-- Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  color: #fff;
+
+  /* modern gradient (more depth + luxury feel) */
+  background: radial-gradient(circle at top, #0b1220 0%, #05070d 50%, #000000 100%);
+  overflow-x: hidden;
+}
+
+/* subtle animated glow background */
+body::before {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 40%),
+              radial-gradient(circle, rgba(34,197,94,0.10), transparent 40%);
+  animation: floatGlow 12s linear infinite;
+  z-index: -1;
+}
+
+@keyframes floatGlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 40px;
+
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.6),
+    inset 0 0 80px rgba(59,130,246,0.05);
+}
+
+/* ===== CAR BOX ===== */
+.car-box {
+  display: flex;
+  gap: 25px;
+  padding: 25px;
+
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.car-box img {
+  width: 220px;
+  border-radius: 14px;
+  transition: 0.3s;
+}
+
+.car-box img:hover {
+  transform: scale(1.05);
+}
+
+.car-box h2 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.price {
+  font-size: 22px;
+  font-weight: 700;
+
+  background: linear-gradient(90deg, #22c55e, #3b82f6);
+  -webkit-background-clip: text;
+background-clip: text; /* Yeh line add karni hai */
+-webkit-text-fill-color: transparent;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  transition: 0.3s;
+  /* Premium touch: smooth text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+select option {
+  background-color: #0b1220; 
+  padding: 10px;
+}
+
+
+select {
+  appearance: none; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 18px;
+  cursor: pointer;
+}
+
+/* ===== PAYMENT CARD STYLE ===== */
+.payment label {
+  flex: 1;
+  padding: 16px;
+  border-radius: 14px;
+  cursor: pointer;
+
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  transition: 0.3s;
+}
+
+.payment label:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59,130,246,0.5);
+  box-shadow: 0 10px 25px rgba(59,130,246,0.15);
+}
+
+/* ===== BUTTON ===== */
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 30px;
+
+  border: none;
+  border-radius: 14px;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+
+  background: linear-gradient(135deg, #3b82f6, #22c55e);
+
+  cursor: pointer;
+  transition: 0.3s;
+
+  box-shadow: 0 10px 30px rgba(59,130,246,0.25);
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(59,130,246,0.35);
+}
+
+.terms {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+
+  margin-top: 25px;
+  padding: 16px 18px;
+  border-radius: 14px;
+
+  /* glass effect matching container */
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  /* soft glow */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Car Info -->
+  <div class="car-box">
+    <img id="carImage" src="assets/logo-white.png">
+    <div class="car-details">
+      <h2 id="carName">Car Name</h2>
+      <p class="price" id="carPrice">₹0 / day</p>
+    <p id="carInfo">✔ Fuel Included | ✔ AC | ✔ Comfortable Ride</p>
+    </div>
+  </div>
+
+<form id="bookingForm">
+
+    <!-- Select Car -->
+    <div class="section">
+      <h3>🚘 Select Your Ride</h3>
+      <select id="carSelect">
+        <option value="">Choose Car</option>
+        <option value="Thar">Thar</option>
+        <option value="XUV">XUV 3XO</option>
+        <option value="Scorpio">Scorpio</option>
+        <option value="Swift">Swift Dzire</option>
+        <option value="Ertiga">Ertiga</option>
+        <option value="Fortuner">Fortuner</option>
+        <option value="Innova">Innova</option>
+        <option value="Harrier">Harrier</option>
+        <option value="Tiago">Tiago</option>
+        <option value="Alto">Alto 800</option>
+        <option value="City">Honda City</option>
+        <option value="Amaze">Honda Amaze</option>
+        <option value="Elevate">Honda Elevate</option>
+        <option value="Corolla">Corolla</option>
+        <option value="Sumo">Tata Sumo</option>
+      </select>
+    </div>
+
+    <!-- User Details -->
+    <div class="section">
+      <h3>👤 Your Details</h3>
+
+      <div class="row">
+        <input type="text" id="name" placeholder="Full Name" required>
+<input type="tel" id="phone" placeholder="Mobile Number" required> 
+      </div>
+
+      <div class="row">
+       <input type="email" id="email" placeholder="Email" required>
+<input type="text" id="address" placeholder="Address" required>
+      </div>
+
+      <div class="row">
+        <input type="text" id="city" placeholder="City" required>
+
+        <select id="state" required>
+          <option value="">Select State</option>
+          <option>Himachal Pradesh</option>
+          <option>Punjab</option>
+          <option>Delhi</option>
+          <option>Haryana</option>
+          <option>Uttar Pradesh</option>
+          <option>Maharashtra</option>
+          <option>Rajasthan</option>
+          <option>Gujarat</option>
+          <option>Tamil Nadu</option>
+          <option>Karnataka</option>
+          <option>West Bengal</option>
+          <option>Bihar</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Rental -->
+    <div class="section">
+      <h3>🚗 Select Date & Time</h3>
+
+      <div class="row">
+        <input type="date" id="date" required>
+<input type="time" id="time" required>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div class="section">
+      <h3>💳 Payment Method</h3>
+
+      <div class="payment">
+        <label><input type="radio" name="pay" required> Cash</label>
+        <label><input type="radio" name="pay"> UPI</label>
+        <label><input type="radio" name="pay"> Card</label>
+      </div>
+    </div>
+
+    <!-- Terms -->
+    <div class="section">
+      <h3>📜 Terms & Conditions</h3>
+      <div class="terms">
+        • Valid ID proof required<br>
+        • Fuel same-to-same<br>
+        • Late return charges apply<br>
+        • Driving license mandatory<br>
+        • Company not responsible for belongings
+      </div>
+
+      <div style="margin-top:8px;">
+        <input type="checkbox" id="terms"> I agree
+      </div>
+    </div>
+
+    <button type="submit">Confirm Booking</button>
+
+  </form>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "",
+      });
+   })();
+</script>
+<script src="mail.js"></script>
+<script>
+
+document.getElementById("carSelect").addEventListener("change", function(){
+  const car = this.value;
+
+  if(car === "Thar"){
+    carName.innerText = "Thar"; 
+    carPrice.innerText = "₹999 / day";
+    carImage.src = "assets/Thar.jpg";
+    carInfo.innerText = "4 People | Diesel | Manual";
+  }
+  else if(car === "XUV"){
+    carName.innerText = "XUV 3XO";
+    carPrice.innerText = "₹799 / day";
+    carImage.src = "assets/xuv.jpg";
+    carInfo.innerText = "5 People | Petrol | Manual";
+  }
+
+  else if(car === "Scorpio"){
+    carName.innerText = "Scorpio";
+    carPrice.innerText = "₹4499 / day";
+    carImage.src = "assets/scorpio.jpg";
+    carInfo.innerText = "7 People | Diesel | Manual";
+  }
+
+  else if(car === "Swift"){
+    carName.innerText = "Swift Dzire";
+    carPrice.innerText = "₹2499 / day";
+    carImage.src = "assets/deals-7.png";
+    carInfo.innerText = "4 People | Petrol | Auto";
+  }
+
+  else if(car === "Ertiga"){
+    carName.innerText = "Ertiga";
+    carPrice.innerText = "₹2999 / day";
+    carImage.src = "assets/deals-8.png";
+    carInfo.innerText = "7 People | Diesel | Manual";
+  }
+
+  else if(car === "Fortuner"){
+    carName.innerText = "Fortuner";
+    carPrice.innerText = "₹7999 / day";
+    carImage.src = "assets/deals-12.png";
+    carInfo.innerText = "7 People | Diesel | Manual";
+  }
+
+  else if(car === "Innova"){
+    carName.innerText = "Innova";
+    carPrice.innerText = "₹1799 / day";
+    carImage.src = "assets/deals-11.png";
+    carInfo.innerText = "7 People | Diesel | Manual";
+  }
+
+  else if(car === "Harrier"){
+    carName.innerText = "Harrier";
+    carPrice.innerText = "₹4999 / day";
+    carImage.src = "assets/deals-6.png";
+    carInfo.innerText = "5 People | Diesel | Auto";
+  }
+
+  else if(car === "Tiago"){
+    carName.innerText = "Tiago";
+    carPrice.innerText = "₹1299 / day";
+    carImage.src = "assets/deals-4.png";
+    carInfo.innerText = "4 People | Petrol | Manual";
+  }
+
+  else if(car === "Alto"){
+    carName.innerText = "Alto 800";
+    carPrice.innerText = "₹1699 / day";
+    carImage.src = "assets/deals-9.png";
+    carInfo.innerText = "4 People | Petrol | Manual";
+  }
+
+  else if(car === "City"){
+    carName.innerText = "Honda City";
+    carPrice.innerText = "₹2699 / day";
+    carImage.src = "assets/deals-15.png";
+    carInfo.innerText = "5 People | Petrol | Manual";
+  }
+
+  else if(car === "Amaze"){
+    carName.innerText = "Honda Amaze";
+    carPrice.innerText = "₹2499 / day";
+    carImage.src = "assets/deals-13.png";
+    carInfo.innerText = "5 People | Diesel | Manual";
+  }
+
+  else if(car === "Elevate"){
+    carName.innerText = "Honda Elevate";
+    carPrice.innerText = "₹1499 / day";
+    carImage.src = "assets/deals-14.png";
+    carInfo.innerText = "5 People | Petrol | Manual";
+  }
+
+  else if(car === "Corolla"){
+    carName.innerText = "Corolla";
+    carPrice.innerText = "₹3999 / day";
+    carImage.src = "assets/deals-10.png";
+    carInfo.innerText = "5 People | Diesel | Manual";
+  }
+
+  else if(car === "Sumo"){
+    carName.innerText = "Tata Sumo";
+    carPrice.innerText = "₹899 / day";
+    carImage.src = "assets/deals-5.png";
+    carInfo.innerText = "7 People | Diesel | Manual";
+ }
+
+  else if(car === "") {   
+    carName.innerText = "Car Name";
+    carPrice.innerText = "₹0 / day";
+    carImage.src = "assets/logo-white.png";
+    carInfo.innerText = "✔ Fuel Included | ✔ AC | ✔ Comfortable Ride";
+  }
+});
+</script>
+
+</script>
+<script>
+
+$('#state').select2();
+
+function validateForm(){
+  if(!document.getElementById("terms").checked){
+    alert("Accept Terms first");
+    return false;
+  }
+  alert("Booking Confirmed ✅");
+  return true;
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  console.log("page Loaded Successfully");
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Kangra Drives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Darker gradient for better text visibility */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), 
+                        url("assets/bg.jpg"); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.07); /* Very subtle white */
+            backdrop-filter: blur(15px); /* Smooth glass effect */
+            -webkit-backdrop-filter: blur(15px);
+            padding: 45px 35px;
+            width: 360px; /* Slightly wider for better balance */
+            border-radius: 20px;
+            text-align: center;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15); /* Light border for glass look */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            text-transform: capitalize;
+            font-size: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 8px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #3b82f6; /* Subtle blue glow */
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 12px;
+            background: #2563eb; /* More professional blue */
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin: 10px 0;
+            min-height: 18px;
+            font-weight: 400;
+        }
+        
+        /* Small branding detail */
+        .brand-dot {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <h2>Welcome to Kangra Drives<span class="brand-dot">.</span></h2>
+
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+
+    <p class="error" id="errorMsg"></p>
+
+    <button onclick="goToMain()">Login</button>
+</div>
+
+<script>
+function goToMain(){
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
+    let error = document.getElementById("errorMsg");
+
+    if(username === "" || password === ""){
+        error.innerText = "Please fill all fields to continue";
+        return;
+    }
+
+    sessionStorage.setItem("username", username);
+    sessionStorage.setItem("isLoggedIn", "true");
+
+    // Redirect
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
